@@ -1,7 +1,7 @@
+import cors from "cors";
 import express from "express";
-import cors from "cors"
-import {Server} from "socket.io";
-import {createServer} from "http"
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 var store = {}
 
@@ -28,15 +28,21 @@ io.on("connection", (socket) => {
     });
     
     socket.on("room-update", (data, fn) => {
-        const rooms = [];
-        socket.rooms.forEach((item) => {
-            rooms.push(item);
-        })
-        console.log(socket.id, "@, rooms=", rooms);
-        const {snip, id} = data;
-        // console.log(data);
-        // if(store[id]) store[id] += snip
-        store[id] = snip
+        // const rooms = [];
+        // socket.rooms.forEach((item) => {
+        //     rooms.push(item);
+        // })
+        // console.log(socket.id, "@, rooms=", rooms);
+        const {snip, id, startInd, endInd} = data;
+        const buf = Buffer.from(snip);
+        console.log(buf);
+        console.log(data);
+        if(store[id]) {
+            // const first = store[id].slice(0,startInd);
+            // const second = store[id].slice(startInd);
+            // store[id] = first + snip + second;
+        }
+        else store[id] = snip
         console.log({store});
         socket.to(id).emit("room-update-sync", {data: snip})
         fn()
